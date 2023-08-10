@@ -31,6 +31,16 @@ public class GameManager : MonoBehaviour
                 _uiManager.HideTitleScreen();
             }
 
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                _uiManager.ShowTutorialScreen();
+            }
+
+            if (Input.GetKeyDown(KeyCode.Q))
+            {
+                _uiManager.HideTutorialScreen();
+            }
+
         }
         if (Input.GetKeyDown(KeyCode.R))
         {

@@ -10,9 +10,10 @@ public class UiManager : MonoBehaviour
     public float score;
     public Text scoreText;
     public GameObject titleScreen;
+    public GameObject tutorialScreen;
+
     public void UpdateLives(int currentLives)
     {
-        Debug.Log("Player Lives:  " + currentLives);
         livesImageDisplay.sprite = _life[currentLives];
         if (score > 100)
         {
@@ -43,5 +44,31 @@ public class UiManager : MonoBehaviour
         titleScreen.SetActive(false);
         scoreText.text = "Score: ";
     }
-   
+
+    public void ManageBetweenTitleAndTutorial()
+    {
+        Debug.Log(titleScreen.activeInHierarchy);
+        if(titleScreen.activeInHierarchy)
+        {
+            HideTutorialScreen();
+        }
+        else
+        {
+            ShowTutorialScreen();
+        }
+    }
+
+
+    public void ShowTutorialScreen()
+    {
+        titleScreen.SetActive(false);
+        tutorialScreen.SetActive(true);
+    }
+
+    public void HideTutorialScreen()
+    {
+        tutorialScreen.SetActive(false);
+        titleScreen.SetActive(true);
+    }
+
 }
