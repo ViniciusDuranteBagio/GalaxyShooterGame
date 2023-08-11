@@ -1,30 +1,34 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using static UnityEngine.EventSystems.EventTrigger;
 
 public class GameManager : MonoBehaviour
 {
     public bool gameOver = true;
     public GameObject player;
-
+    public SpanwManager spawnManager;
+    public EnemyAI enemyAi;
     private UiManager _uiManager;
 
     private void Start()
     {
         _uiManager = GameObject.Find("Canvas").GetComponent<UiManager>();
+        _uiManager.actualScreen = "Title";
+        _uiManager.phase = 1;
+        enemyAi._speed = 2.35f;
+        enemyAi.health = 1;
+        spawnManager.timeToSpawnEnemys = 2.5f;
+        _uiManager.UpdatePhaseText(_uiManager.phase);
     }
-    //if game over is true
-    // if backspace key press
-    // spawn player
-    //game over is false
-    //hide title screen
 
     private void Update()
     {
         if (gameOver == true)
         {
-            if (Input.GetKeyDown(KeyCode.Space))
+            if (Input.GetKeyDown(KeyCode.Space) && _uiManager.actualScreen == "Title")
             {
                 Instantiate(player, Vector3.zero , Quaternion.identity);
                 gameOver = false;
@@ -33,8 +37,8 @@ public class GameManager : MonoBehaviour
 
             if (Input.GetKeyDown(KeyCode.Escape))
             {
-                _uiManager.ShowTutorialScreen();
-            }
+                _uiManager.ManageBetweenTitleAndOtherScreens();
+            } 
 
             if (Input.GetKeyDown(KeyCode.Q))
             {
@@ -45,9 +49,58 @@ public class GameManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.R))
         {
             SceneManager.LoadScene(0);
-
         }
 
 
     }
+
+    public void StopGame() 
+    {
+        gameOver = true;
+        spawnManager.StopSpawnRoutine();
+        DestroyEnemysAndPowerUpsObjects();
+    }
+
+    protected void DestroyEnemysAndPowerUpsObjects()
+    {
+        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+        if (enemies != null)
+        {
+            foreach (GameObject enemy in enemies)
+            {
+                Destroy(enemy);
+            }
+        }
+    }
+
+    public void IncreasePhase()
+    {
+        _uiManager.phase++;
+        _uiManager.ShowPhaseChangeScreen(_uiManager.phase);
+        _uiManager.UpdatePhaseText(_uiManager.phase);
+        IncreaseDificult(_uiManager.phase);
+    }
+
+    private void IncreaseDificult(int phase)
+    {
+        switch (phase)
+        {
+            case 2:
+                spawnManager.timeToSpawnEnemys -= 0.5f;
+                break;
+            case 3:
+                enemyAi.health++;
+                spawnManager.timeToSpawnEnemys -= 0.5f;
+                break;
+            case 4:
+                enemyAi._speed++;
+                enemyAi.health++;
+                spawnManager.timeToSpawnEnemys -= 0.5f;
+                break;
+            default:
+                break;
+        }
+    ;
+    }
+    
 }

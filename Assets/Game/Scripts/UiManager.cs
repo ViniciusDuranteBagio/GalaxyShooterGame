@@ -1,6 +1,10 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Drawing;
+using TMPro;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
 using UnityEngine.UI;
 
 public class UiManager : MonoBehaviour
@@ -9,11 +13,27 @@ public class UiManager : MonoBehaviour
     public Image livesImageDisplay;
     public float score;
     public Text scoreText;
+    public Text phaseText;
+    public Text phaseChangeText;
     public GameObject titleScreen;
     public GameObject tutorialScreen;
+    public GameObject deadScreen;
+    public GameObject changePhaseScreen;
+    public GameManager gameManager;
+    private string ActualScreen;
+
+    public int phase;
+
+    public string actualScreen
+    {
+        get { return ActualScreen; }
+        set { ActualScreen = value; }
+    }
 
     public void UpdateLives(int currentLives)
     {
+        currentLives = currentLives < 0 ? 0 : currentLives;
+
         livesImageDisplay.sprite = _life[currentLives];
         if (score > 100)
         {
@@ -25,14 +45,36 @@ public class UiManager : MonoBehaviour
     {
         score += 20;
 
-        scoreText.text = "Score: " + score;
+        if (IsScoreEnableToIncreasePhase(score)) 
+        {
+            gameManager.IncreasePhase();
+            UpdatePhaseText(phase);
+        }
 
+        scoreText.text = "Score: " + score;
     }
+
+    public void UpdatePhaseText(int phase)
+    {
+        phaseText.text = "Fase : " + phase;
+    }
+
+    private bool IsScoreEnableToIncreasePhase(float score)
+    {
+        int[] array = { 1000, 2000, 3000};
+
+        if (!Array.Exists(array, element => element == score))
+        {
+            return false;
+        }
+
+        return true;
+    }
+
     public void UpdateScoreDamage()
     {
         score = score - 100;
         scoreText.text = "Score: " + score;
-
     }
     public void ShowTitleScreen ()
     {
@@ -45,16 +87,14 @@ public class UiManager : MonoBehaviour
         scoreText.text = "Score: ";
     }
 
-    public void ManageBetweenTitleAndTutorial()
+    public void ManageBetweenTitleAndOtherScreens()
     {
-        Debug.Log(titleScreen.activeInHierarchy);
-        if(titleScreen.activeInHierarchy)
-        {
-            HideTutorialScreen();
-        }
-        else
-        {
+        if (ActualScreen == "Title") {
             ShowTutorialScreen();
+        } else if (ActualScreen == "Tutorial") {
+            HideTutorialScreen();
+        } else if (ActualScreen == "Dead") {
+            HideDeadScreen();
         }
     }
 
@@ -63,12 +103,78 @@ public class UiManager : MonoBehaviour
     {
         titleScreen.SetActive(false);
         tutorialScreen.SetActive(true);
+        ActualScreen = "Tutorial";
     }
 
     public void HideTutorialScreen()
     {
         tutorialScreen.SetActive(false);
         titleScreen.SetActive(true);
+        ActualScreen = "Title";
     }
 
+    public void ShowDeadScreen()
+    {
+        deadScreen.SetActive(true);
+        StartCoroutine(FadeInDeadScreen());
+        ActualScreen = "Dead";
+    }
+
+    public void HideDeadScreen()
+    {
+        deadScreen.SetActive(false);
+        titleScreen.SetActive(true);
+        ActualScreen = "Title";
+    }
+
+    public void ShowPhaseChangeScreen(int phase)
+    {
+        changePhaseScreen.SetActive(true);
+        string textPhaseChange = GenerateTextPhase(phase);
+        phaseChangeText.text = textPhaseChange;
+        StartCoroutine(FadeOutPhaseScreen());
+    }
+
+    public string GenerateTextPhase(int phase) 
+    {
+        switch (phase)
+        {
+            case 2:
+                return "Fase 2 Iniciada\r\nMais inimigos irão nascer\r\nBoa Sorte";
+            case 3:
+                return "Fase 3 Iniciada\r\nMais inimigos irão nascer\r\nEles terão mais vida\r\nBoa Sorte";
+            case 4:
+                return "Fase 4 Iniciada\r\nMais inimigos irão nascer\r\nEles terão mais vida\r\nEles serão mais rápidos\r\nBoa Sorte";
+            default:
+                return "";
+        }
+    }
+
+    IEnumerator FadeInDeadScreen()
+    {
+        CanvasGroup canvasGroup = deadScreen.GetComponent<CanvasGroup>();
+        while (canvasGroup.alpha < 1) 
+        {
+            canvasGroup.alpha += Time.deltaTime / 2;
+            yield return null;
+        }
+        yield return null;
+    }
+
+    IEnumerator FadeOutPhaseScreen()
+    {
+        CanvasGroup canvasGroup = deadScreen.GetComponent<CanvasGroup>();
+        canvasGroup.alpha = 1;
+        while (canvasGroup.alpha > 0)
+        {
+            canvasGroup.alpha -= Time.deltaTime / 2;
+           
+            yield return null;
+        }
+        if (canvasGroup.alpha == 0)
+        {
+            changePhaseScreen.SetActive(false);
+        }
+        yield return null;
+    }
 }

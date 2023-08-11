@@ -138,8 +138,8 @@ public class Player : MonoBehaviour
         if (_life < 1)
         {
             Instantiate(_Explosion_PlayerPrefab, transform.position, Quaternion.identity);
-            _gameManager.gameOver = true;
-            _uiManager.ShowTitleScreen();
+            _gameManager.StopGame();
+            _uiManager.ShowDeadScreen();
             isPlayerAlive = false;
             Destroy(this.gameObject);
         }
@@ -174,11 +174,7 @@ public class Player : MonoBehaviour
         yield return new WaitForSeconds(5.0f);
         speedBoostPowerUp = false;
     }
-    // when the game is not started show game title 
-    // when the game started isntantiate player 
-    //when the player dies clear score and show title leting the player restart the game
-    //make player a prefab
-    
+   
 }
 
 

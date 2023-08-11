@@ -12,12 +12,13 @@ public class SpanwManager : MonoBehaviour
     private GameManager _gameManager;
     private UiManager _uiManager;
 
+    public float timeToSpawnEnemys;
+
     void Start()
     {
         _uiManager = GameObject.Find("Canvas").GetComponent<UiManager>();
         _gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
-        StartCoroutine(EnemySpawnCorotine());
-        StartCoroutine(PowerUpSpawnCorotine());
+        StartSpawnRoutine();
     }
     public void StartSpawnRoutine()
     {
@@ -25,23 +26,19 @@ public class SpanwManager : MonoBehaviour
         StartCoroutine(PowerUpSpawnCorotine());
     }
 
+    public void StopSpawnRoutine()
+    {
+        StopCoroutine(EnemySpawnCorotine());
+        StopCoroutine(PowerUpSpawnCorotine());
+    }
+
     IEnumerator EnemySpawnCorotine()
     {
         while (_gameManager.gameOver == false)
         {
-            if(_uiManager.score<500)
-            {
                 float randomX = Random.Range(-8.03f, 8.3f);
                 Instantiate(enemyShipPrefab, transform.position + new Vector3(randomX, 6.16f, 0), Quaternion.identity);
-                yield return new WaitForSeconds(2.0f);
-            }
-
-            else
-            {
-                float randomX = Random.Range(-8.03f, 8.3f);
-                Instantiate(enemyShipPrefab, transform.position + new Vector3(randomX, 6.16f, 0), Quaternion.identity);
-                yield return new WaitForSeconds(1.0f);
-            }  
+                yield return new WaitForSeconds(timeToSpawnEnemys);
         }
     }
 

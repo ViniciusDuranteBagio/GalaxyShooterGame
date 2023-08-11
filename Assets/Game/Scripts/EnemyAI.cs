@@ -5,18 +5,18 @@ using UnityEngine;
 public class EnemyAI : MonoBehaviour
 {
     [SerializeField]
-    private float _speed = 2.35f;
+    public float _speed;
     [SerializeField]
     private GameObject _Enemy_ExplosionPrefab;
     UiManager _uiManager;
     [SerializeField]
     private AudioClip _clip;
+    public int health;
 
     // Start is called before the first frame update
     void Start()
     {
         _uiManager = GameObject.Find("Canvas").GetComponent<UiManager>();
-        
     }
 
     // Update is called once per frame
@@ -39,10 +39,9 @@ public class EnemyAI : MonoBehaviour
             if (player != null)
             {
                 player.Damage();
-                
-                Debug.Log("Damaging  Player");
             }
         }
+
         else if (other.tag == "Laser")
         {
             if (other.transform.parent != null)
@@ -50,11 +49,32 @@ public class EnemyAI : MonoBehaviour
                 Destroy(other.transform.parent.gameObject);
             }
             Destroy(other.gameObject);
+            Damage();
+        }
+    }
+
+    public void Damage()
+    {
+        // hitCount++;
+        // if (hitCount == 1)
+        // {
+        //     _engines[0].SetActive(true);
+        // }
+        // else if (hitCount == 2)
+        // {
+        //     _engines[1].SetActive(true);
+        // }
+        health--;
+        if (health < 1)
+        {
             Instantiate(_Enemy_ExplosionPrefab, transform.position, Quaternion.identity);
             _uiManager.UpdateScore();
             AudioSource.PlayClipAtPoint(_clip, Camera.main.transform.position, 1f);
             Destroy(this.gameObject);
         }
     }
+
+
+
 
 }
