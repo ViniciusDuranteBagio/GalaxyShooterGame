@@ -75,10 +75,21 @@ public class GameManager : MonoBehaviour
 
     public void IncreasePhase()
     {
+        spawnManager.bossFight = false;
         _uiManager.phase++;
         _uiManager.ShowPhaseChangeScreen(_uiManager.phase);
         _uiManager.UpdatePhaseText(_uiManager.phase);
         IncreaseDificult(_uiManager.phase);
+    }
+
+    public void InitiateBossFight()
+    {
+        // achar uma musica mais epica scifi para a boss fight
+        // ao chamar a instacia do boss mostrar o slider do lado da tela, apenas na boss fight
+        //melhorar o slider que esta horrivel
+        DestroyEnemysAndPowerUpsObjects();
+        spawnManager.bossFight = true;
+        spawnManager.InstantiateBoss();
     }
 
     private void IncreaseDificult(int phase)

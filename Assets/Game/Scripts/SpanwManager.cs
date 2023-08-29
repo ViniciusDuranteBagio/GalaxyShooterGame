@@ -7,10 +7,14 @@ public class SpanwManager : MonoBehaviour
     [SerializeField]
     private GameObject enemyShipPrefab;
     [SerializeField]
+    private GameObject Boss;
+    [SerializeField]
     private GameObject[] powerups;
 
     private GameManager _gameManager;
     private UiManager _uiManager;
+
+    public bool bossFight = false;
 
     public float timeToSpawnEnemys;
 
@@ -31,14 +35,23 @@ public class SpanwManager : MonoBehaviour
         StopCoroutine(EnemySpawnCorotine());
         StopCoroutine(PowerUpSpawnCorotine());
     }
+    public void StopEnemySpawnRoutine()
+    {
+        StopCoroutine(EnemySpawnCorotine());
+    }
+
+    public void InstantiateBoss()
+    {
+        Instantiate(Boss, transform.position + new Vector3(-0.03f, 8.53f, 0), Quaternion.identity);
+    }
 
     IEnumerator EnemySpawnCorotine()
     {
-        while (_gameManager.gameOver == false)
+        while (_gameManager.gameOver == false && bossFight == false)
         {
-                float randomX = Random.Range(-8.03f, 8.3f);
-                Instantiate(enemyShipPrefab, transform.position + new Vector3(randomX, 6.16f, 0), Quaternion.identity);
-                yield return new WaitForSeconds(timeToSpawnEnemys);
+            float randomX = Random.Range(-8.03f, 8.3f);
+            Instantiate(enemyShipPrefab, transform.position + new Vector3(randomX, 6.16f, 0), Quaternion.identity);
+            yield return new WaitForSeconds(timeToSpawnEnemys);
         }
     }
 
