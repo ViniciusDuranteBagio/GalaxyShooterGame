@@ -20,6 +20,7 @@ public class UiManager : MonoBehaviour
     public GameObject deadScreen;
     public GameObject changePhaseScreen;
     public GameManager gameManager;
+    public Slider slider;
     private string ActualScreen;
 
     public int phase;
@@ -43,25 +44,20 @@ public class UiManager : MonoBehaviour
 
     public void UpdateScore()
     {
-        score += 20;
+        score += 50;
 
         if (IsScoreEnableToIncreasePhase(score)) 
         {
-            gameManager.IncreasePhase();
-            UpdatePhaseText(phase);
+            gameManager.InitiateBossFight();
         }
 
         scoreText.text = "Score: " + score;
     }
 
-    public void UpdatePhaseText(int phase)
-    {
-        phaseText.text = "Fase : " + phase;
-    }
-
     private bool IsScoreEnableToIncreasePhase(float score)
     {
-        int[] array = { 1000, 2000, 3000};
+        //fazer isso funcionar mesmo quando tomar dano e os numeros ficarem quebrados
+        int[] array = { 1000, 2000, 3000 };
 
         if (!Array.Exists(array, element => element == score))
         {
@@ -69,6 +65,17 @@ public class UiManager : MonoBehaviour
         }
 
         return true;
+    }
+
+    public void KilledTheBoss()
+    {
+        gameManager.IncreasePhase();
+        UpdatePhaseText(phase);
+    }
+
+    public void UpdatePhaseText(int phase)
+    {
+        phaseText.text = "Fase : " + phase;
     }
 
     public void UpdateScoreDamage()
@@ -150,6 +157,11 @@ public class UiManager : MonoBehaviour
         }
     }
 
+    public void UpdateHealthSlider(int health)
+    {
+        slider.value = health;
+    }
+
     IEnumerator FadeInDeadScreen()
     {
         CanvasGroup canvasGroup = deadScreen.GetComponent<CanvasGroup>();
@@ -177,4 +189,6 @@ public class UiManager : MonoBehaviour
         }
         yield return null;
     }
+
+   
 }
