@@ -35,6 +35,10 @@ public class SpanwManager : MonoBehaviour
         StopCoroutine(EnemySpawnCorotine());
         StopCoroutine(PowerUpSpawnCorotine());
     }
+    public void StartEnemySpawnRoutine()
+    {
+        StartCoroutine(EnemySpawnCorotine());
+    }
     public void StopEnemySpawnRoutine()
     {
         StopCoroutine(EnemySpawnCorotine());
@@ -43,6 +47,7 @@ public class SpanwManager : MonoBehaviour
     public void InstantiateBoss()
     {
         Instantiate(Boss, transform.position + new Vector3(-0.03f, 8.53f, 0), Quaternion.identity);
+        StopEnemySpawnRoutine();
     }
 
     IEnumerator EnemySpawnCorotine()
