@@ -75,7 +75,9 @@ public class GameManager : MonoBehaviour
 
     public void IncreasePhase()
     {
+        _uiManager.HideBossFightPannel();
         spawnManager.bossFight = false;
+        spawnManager.StartEnemySpawnRoutine();
         _uiManager.phase++;
         _uiManager.ShowPhaseChangeScreen(_uiManager.phase);
         _uiManager.UpdatePhaseText(_uiManager.phase);
@@ -88,6 +90,7 @@ public class GameManager : MonoBehaviour
         // ao chamar a instacia do boss mostrar o slider do lado da tela, apenas na boss fight
         //melhorar o slider que esta horrivel
         DestroyEnemysAndPowerUpsObjects();
+        _uiManager.ShowBossFightPannel();
         spawnManager.bossFight = true;
         spawnManager.InstantiateBoss();
     }
