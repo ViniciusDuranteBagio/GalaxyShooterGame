@@ -16,9 +16,11 @@ public class UiManager : MonoBehaviour
     public Text phaseText;
     public Text phaseChangeText;
     public GameObject titleScreen;
+    public GameObject BossFightPanel;
     public GameObject tutorialScreen;
     public GameObject deadScreen;
     public GameObject changePhaseScreen;
+    public GameObject dangerScreen;
     public GameManager gameManager;
     public Slider slider;
     private string ActualScreen;
@@ -76,6 +78,15 @@ public class UiManager : MonoBehaviour
     public void UpdatePhaseText(int phase)
     {
         phaseText.text = "Fase : " + phase;
+    }
+    public void ShowBossFightPannel()
+    {
+        BossFightPanel.SetActive(true);
+
+    }
+    public void HideBossFightPannel()
+    {
+        BossFightPanel.SetActive(false);
     }
 
     public void UpdateScoreDamage()
@@ -190,5 +201,20 @@ public class UiManager : MonoBehaviour
         yield return null;
     }
 
-   
+    public void SetDangerScreenActive()
+    {
+        dangerScreen.SetActive(true);
+    }
+
+    public void SetDangerScreenUnactive()
+    {
+        dangerScreen.SetActive(false);
+    }
+
+    public bool IsDangerScreenActive()
+    {
+        return dangerScreen.activeInHierarchy;
+    }
+
+
 }
