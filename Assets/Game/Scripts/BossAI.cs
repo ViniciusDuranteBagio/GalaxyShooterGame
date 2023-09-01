@@ -23,7 +23,7 @@ public class BossAI : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        health = 100;
+        health = 30;
         _uiManager = GameObject.Find("Canvas").GetComponent<UiManager>();
     }
 
@@ -36,11 +36,16 @@ public class BossAI : MonoBehaviour
     {
         if (IsOnStartPosition())
         {
+            _uiManager.SetDangerScreenUnactive();
             MovementBoss();
             Shoot();
         }
         else
         {
+            if (!_uiManager.IsDangerScreenActive())
+            {
+                _uiManager.SetDangerScreenActive();
+            }
             MoveToInitialPosition();
         }
     }
@@ -50,7 +55,12 @@ public class BossAI : MonoBehaviour
     }
     private void MoveToInitialPosition()
     {
-        transform.Translate(Vector3.down * _speed * Time.deltaTime);
+        float sliderValue = _uiManager.slider.value;
+        if (sliderValue < 100f)
+        {
+            _uiManager.slider.value++;
+        }
+            transform.Translate(Vector3.down * 0.5f * Time.deltaTime);
     }
     private void MovementBoss()
     {
@@ -110,7 +120,11 @@ public class BossAI : MonoBehaviour
         // {
         //     _engines[1].SetActive(true);
         // }
-        //fazer animação dele perdendo motor quando for chegar perto de morrer
+        //fazer animação dele perdendo motor quando for chegar perto de 
+        if (!IsOnStartPosition())
+        {
+            return;
+        }
         health--;
         _uiManager.UpdateHealthSlider(health);
         if (health < 1)
@@ -126,7 +140,6 @@ public class BossAI : MonoBehaviour
     {
         if (Time.time > _canFire)
         {
-            //_audioSource.Play();
            Instantiate(_bossLaserPrefab, transform.position - new Vector3(0, 1.4f, 0), Quaternion.identity);
             _canFire = Time.time + _fireRate;
         }
