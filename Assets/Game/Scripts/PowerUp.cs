@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class PowerUp : MonoBehaviour
 {
+
+    public delegate void SpeedBoostDelegate();
+    public static event SpeedBoostDelegate OnSpeedBoostPowerUp;
+
     [SerializeField]
     private float _speed = 2.5f;
 
@@ -25,15 +29,15 @@ public class PowerUp : MonoBehaviour
 
         if(transform.position.y < -5.71f)
         { 
-        Destroy(this.gameObject);
+            Destroy(this.gameObject);
         }
     }
+
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.tag == "Player")
         {
-            //access the player
-            // if the powerupID is 0
+          
             Player player = other.GetComponent<Player>();
 
             if (player != null)
@@ -45,7 +49,10 @@ public class PowerUp : MonoBehaviour
                  
                 else if (powerupID == 1)
                 {
-                    player.SpeedBoostPowerUpOn();       
+                    if (OnSpeedBoostPowerUp != null)
+                    {
+                        OnSpeedBoostPowerUp();
+                    }
                 }
 
                 else if (powerupID == 2)

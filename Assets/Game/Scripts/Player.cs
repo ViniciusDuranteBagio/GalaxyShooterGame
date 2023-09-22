@@ -20,8 +20,6 @@ public class Player : MonoBehaviour
     private float _fireRate = 0.32f;
     [SerializeField]
     private float _canFire = 0.0f;
-    [SerializeField]
-    private float _speed = 5.0f;
 
     private SpanwManager _spanwManager;
     private AudioSource _audioSource;
@@ -32,7 +30,6 @@ public class Player : MonoBehaviour
 
     public bool isPlayerAlive = true;
     public bool canTripleShot = false;
-    public bool speedBoostPowerUp = false;
     public bool shieldPowerUp = false;
 
     private void Start()
@@ -55,7 +52,6 @@ public class Player : MonoBehaviour
     }
     private void Update()
     {
-        Movement();
         if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))
         {
             Shoot();
@@ -80,39 +76,7 @@ public class Player : MonoBehaviour
             _canFire = Time.time + _fireRate;
         }
     }
-    private void Movement()
-    {
-        float horizontalInput = Input.GetAxis("Horizontal");
-        float verticalInput = Input.GetAxis("Vertical");
-        if (speedBoostPowerUp == true)
-        {
-            transform.Translate(Vector3.right * 2.0f * _speed * horizontalInput * Time.deltaTime);
-            transform.Translate(Vector3.up * 2.0f * _speed * verticalInput * Time.deltaTime);
-        }
-        else
-        {
-            transform.Translate(Vector3.right * _speed * horizontalInput * Time.deltaTime);
-            transform.Translate(Vector3.up * _speed * verticalInput * Time.deltaTime);
-        }
-
-        if (transform.position.y > 0)
-        {
-            transform.position = new Vector3(transform.position.x, 0, 0);
-        }
-        else if (transform.position.y < -4.2f)
-        {
-            transform.position = new Vector3(transform.position.x, -4.2f, 0);
-        }
-
-        if (transform.position.x > 8.6f)
-        {
-            transform.position = new Vector3(-8.6f, transform.position.y, 0);
-        }
-        else if (transform.position.x < -8.6f)
-        {
-            transform.position = new Vector3(8.6f, transform.position.y, 0);
-        }
-    }
+  
     public void Damage()
     {
         if(shieldPowerUp == true)
@@ -157,23 +121,14 @@ public class Player : MonoBehaviour
 
 
     }
-    public void SpeedBoostPowerUpOn()
-    {
-        speedBoostPowerUp = true;
-        StartCoroutine(SpeedBoostPowerDownRoutine());
-
-    }
+   
     public IEnumerator TripleShotPowerDownRoutine()
     {
         yield return new WaitForSeconds(5.0f);
 
         canTripleShot = false;
     }
-    public IEnumerator SpeedBoostPowerDownRoutine()
-    {
-        yield return new WaitForSeconds(5.0f);
-        speedBoostPowerUp = false;
-    }
+   
    
 }
 
