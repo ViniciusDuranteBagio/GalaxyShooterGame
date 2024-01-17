@@ -10,6 +10,8 @@ public class SpanwManager : MonoBehaviour
     private GameObject Boss;
     [SerializeField]
     private GameObject[] powerups;
+    [SerializeField]
+    private GameObject asteroid;
 
     private GameManager _gameManager;
     private UiManager _uiManager;
@@ -17,17 +19,21 @@ public class SpanwManager : MonoBehaviour
     public bool bossFight = false;
 
     public float timeToSpawnEnemys;
+    public float timeToSpawnPowerUp;
 
     void Start()
     {
+        timeToSpawnPowerUp = 7.0f;
         _uiManager = GameObject.Find("Canvas").GetComponent<UiManager>();
         _gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         StartSpawnRoutine();
     }
+
     public void StartSpawnRoutine()
     {
         StartCoroutine(EnemySpawnCorotine());
         StartCoroutine(PowerUpSpawnCorotine());
+        StartCoroutine(AsteroidSpawnCorotine());
     }
 
     public void StopSpawnRoutine()
@@ -64,20 +70,23 @@ public class SpanwManager : MonoBehaviour
     {
         while (_gameManager.gameOver == false)
         {
-            if (_uiManager.score < 500)
+            //transformar essa validação em um evento para trocar o valor de timeToSpawnPowerUp
+            if (_uiManager.phase >= 2)
             {
-                int randomPowerup = Random.Range(0, 3);
-                Instantiate(powerups[randomPowerup], new Vector3(Random.Range(-8.03f, 8.3f), 6.16f, 0), Quaternion.identity);
-                yield return new WaitForSeconds(7.0f);
+                timeToSpawnPowerUp = 4.0f;
             }
+            int randomPowerup = Random.Range(0, 3);
+            Instantiate(powerups[randomPowerup], new Vector3(Random.Range(-8.03f, 8.3f), 6.16f, 0), Quaternion.identity);
+            yield return new WaitForSeconds(timeToSpawnPowerUp);
+        }
+    }
 
-            else
-            {
-                int randomPowerup = Random.Range(0, 3);
-                Instantiate(powerups[randomPowerup], new Vector3(Random.Range(-8.03f, 8.3f), 6.16f, 0), Quaternion.identity);
-                yield return new WaitForSeconds(4.0f);
-            }
-
+    IEnumerator AsteroidSpawnCorotine()
+    {
+        while (_gameManager.gameOver == false)
+        {
+            Instantiate(asteroid, new Vector3(Random.Range(-8.03f, 8.3f), 6.16f, 0), Quaternion.identity);
+            yield return new WaitForSeconds(10.0f);
         }
     }
 }

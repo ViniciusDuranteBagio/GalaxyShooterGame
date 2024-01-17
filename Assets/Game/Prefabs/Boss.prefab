@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4594561384833555532}
   - component: {fileID: 4594561384833555534}
   - component: {fileID: 6483529151910169760}
+  - component: {fileID: 1755336763608014724}
   m_Layer: 0
   m_Name: Boss
   m_TagString: Enemy
@@ -132,10 +133,24 @@ MonoBehaviour:
   _clip: {fileID: 8300000, guid: a885c043fab7e46438bba03ba9dab6bc, type: 3}
   health: 100
   ShouldMoveToLeft: 1
-  _fireRate: 0.32
-  _canFire: 0
   _bossLaserPrefab: {fileID: 2793030404171915185, guid: dabb3ce059adde044b2f99bc78ef87c3,
     type: 3}
+--- !u!114 &1755336763608014724
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4594561384833555533}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d4907709b6bfe647bad86e18d6677a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  laserAmount: 3
+  startAngle: 90
+  endAngle: 270
+  _uiManager: {fileID: 0}
 --- !u!1001 &6980279711500926127
 PrefabInstance:
   m_ObjectHideFlags: 0

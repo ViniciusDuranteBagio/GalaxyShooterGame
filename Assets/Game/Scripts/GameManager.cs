@@ -24,41 +24,37 @@ public class GameManager : MonoBehaviour
         _uiManager.UpdatePhaseText(_uiManager.phase);
     }
 
-    private void Update()
+    public void StartGame()
     {
-        if (gameOver == true)
-        {
-            if (Input.GetKeyDown(KeyCode.Space) && _uiManager.actualScreen == "Title")
-            {
-                Instantiate(player, Vector3.zero , Quaternion.identity);
-                gameOver = false;
-                _uiManager.HideTitleScreen();
-            }
-
-            if (Input.GetKeyDown(KeyCode.Escape))
-            {
-                _uiManager.ManageBetweenTitleAndOtherScreens();
-            } 
-
-            if (Input.GetKeyDown(KeyCode.Q))
-            {
-                _uiManager.HideTutorialScreen();
-            }
-
-        }
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            SceneManager.LoadScene(0);
-        }
-
-
+        Instantiate(player, Vector3.zero, Quaternion.identity);
+        gameOver = false;
+        _uiManager.HideTitleScreen();
     }
 
-    public void StopGame() 
+    public void StopGame()
     {
         gameOver = true;
         spawnManager.StopSpawnRoutine();
         DestroyEnemysAndPowerUpsObjects();
+    }
+
+    public void GoToTitleFromTutorialScreen() 
+    {
+        _uiManager.HideTutorialScreen();
+    }
+    public void GoToTutorialFromTitleScreen()
+    {
+        _uiManager.ShowTutorialScreen();
+    }
+
+    public void GoToTitleFromLoseScreen()
+    {
+        _uiManager.HideDeadScreenAndShowTitleScreen();
+    }
+
+    public void RestartGame()
+    {
+        SceneManager.LoadScene(0);
     }
 
     protected void DestroyEnemysAndPowerUpsObjects()
@@ -75,12 +71,8 @@ public class GameManager : MonoBehaviour
 
     public void IncreasePhase()
     {
-        _uiManager.HideBossFightPannel();
         spawnManager.bossFight = false;
         spawnManager.StartEnemySpawnRoutine();
-        _uiManager.phase++;
-        _uiManager.ShowPhaseChangeScreen(_uiManager.phase);
-        _uiManager.UpdatePhaseText(_uiManager.phase);
         IncreaseDificult(_uiManager.phase);
     }
 
@@ -100,21 +92,64 @@ public class GameManager : MonoBehaviour
         switch (phase)
         {
             case 2:
-                spawnManager.timeToSpawnEnemys -= 0.5f;
+                DecreaseEnemyTimeToSpawn();
                 break;
             case 3:
-                enemyAi.health++;
-                spawnManager.timeToSpawnEnemys -= 0.5f;
+                IncreaseEnemyHealth();
+                DecreaseEnemyTimeToSpawn();
                 break;
             case 4:
-                enemyAi._speed++;
-                enemyAi.health++;
-                spawnManager.timeToSpawnEnemys -= 0.5f;
+                IncreaseEnemySpeed();
+                IncreaseEnemyHealth();
+                DecreaseEnemyTimeToSpawn();
                 break;
             default:
                 break;
         }
-    ;
     }
-    
+    private void IncreaseEnemySpeed() 
+    {
+        enemyAi._speed++;
+    }
+    private void IncreaseEnemyHealth()
+    {
+        enemyAi.health++;
+    }
+
+    private void DecreaseEnemyTimeToSpawn() 
+    {         
+        spawnManager.timeToSpawnEnemys -= 0.5f;        
+    }
+    public int addCristalToPlayer()
+    {
+        Player playerScript = player.GetComponent<Player>();
+        playerScript.addCristal();
+        return playerScript.cristals;
+    }
+
+    public void PurchaseItem(string item)
+    {
+        Player playerScript = player.GetComponent<Player>();
+        playerScript.SubCristal();
+    }
+
+    public void AddItemToPlayer(string item)
+    {
+        Player playerScript = player.GetComponent<Player>();
+        switch (item)
+        {
+            case "Damage":
+                playerScript.IncreaseDamage();
+                break;
+            case "Speed":
+                playerScript.IncreaseSpeed();
+                break;
+            case "Attack Speed":
+                playerScript.IncreaseAttackSpeed();
+                break;
+            default:
+                break;
+        }
+    }
+
 }

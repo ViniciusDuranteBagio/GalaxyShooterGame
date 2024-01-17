@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyAI : MonoBehaviour
+public class EnemyAI : MonoBehaviour, IMovable
 {
     [SerializeField]
     public float _speed;
@@ -11,7 +11,7 @@ public class EnemyAI : MonoBehaviour
     UiManager _uiManager;
     [SerializeField]
     private AudioClip _clip;
-    public int health;
+    public float health;
 
     // Start is called before the first frame update
     void Start()
@@ -22,13 +22,7 @@ public class EnemyAI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        transform.Translate(Vector3.down * _speed * Time.deltaTime);
-        if (transform.position.y < -6.22f)
-        {
-            float randomX = Random.Range(-8.03f, 8.3f);
-            transform.position = new Vector3(randomX, 6.22f, 0);
-        }
-
+        Move();
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -44,27 +38,21 @@ public class EnemyAI : MonoBehaviour
 
         else if (other.tag == "Laser")
         {
+            float damage = other.GetComponent<Laser>().GetLaserDamage();
+
             if (other.transform.parent != null)
             {
                 Destroy(other.transform.parent.gameObject);
             }
             Destroy(other.gameObject);
-            Damage();
+            
+            Damage(damage);
         }
     }
 
-    public void Damage()
+    public void Damage(float damage)
     {
-        // hitCount++;
-        // if (hitCount == 1)
-        // {
-        //     _engines[0].SetActive(true);
-        // }
-        // else if (hitCount == 2)
-        // {
-        //     _engines[1].SetActive(true);
-        // }
-        health--;
+        health = health - damage;
         if (health < 1)
         {
             Instantiate(_Enemy_ExplosionPrefab, transform.position, Quaternion.identity);
@@ -74,7 +62,13 @@ public class EnemyAI : MonoBehaviour
         }
     }
 
-
-
-
+    public void Move()
+    {
+        transform.Translate(Vector3.down * _speed * Time.deltaTime);
+        if (transform.position.y < -6.22f)
+        {
+            float randomX = Random.Range(-8.03f, 8.3f);
+            transform.position = new Vector3(randomX, 6.22f, 0);
+        }
+    }
 }

@@ -7,31 +7,26 @@ public class Laser : MonoBehaviour
     [SerializeField]
     private float _speed = 10.0f;
     private Vector3 direction;
-
-
-
-    void Start()
-    {
-        if (this.tag == "Laser")
-        {
-            direction = Vector3.up;
-        }
-        
-        if(this.tag == "EnemyLaser") 
-        { 
-            direction = Vector3.down; 
-        }
-    }
-
+    private float _laserDamage;
    
     void Update()
     {
-        MoveLaser(direction);
+        MoveLaser();
     }
 
-    private void MoveLaser(Vector3 direction)
+    public float GetLaserDamage()
     {
-        transform.Translate(direction * _speed * Time.deltaTime);
+        return _laserDamage;
+    }
+
+    public void SetLaserDamage(float damage)
+    {
+        _laserDamage = damage;
+    }
+
+    private void MoveLaser()
+    {
+        transform.Translate(Vector3.up * _speed * Time.deltaTime);
 
         if (transform.position.y >= 6 || transform.position.y <= -6)
         {
@@ -41,18 +36,6 @@ public class Laser : MonoBehaviour
             }
 
             Destroy(this.gameObject);
-        }
-    }
-
-    private void OnTriggerEnter2D(Collider2D other)
-    {
-        if (this.tag == "EnemyLaser" && other.tag == "Player")
-        {
-            Player player = other.GetComponent<Player>();
-            if (player != null)
-            {
-                player.Damage();
-            }
         }
     }
 } 

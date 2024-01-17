@@ -15,17 +15,22 @@ public class UiManager : MonoBehaviour
     public Text scoreText;
     public Text phaseText;
     public Text phaseChangeText;
+    public Text cristalText;
     public GameObject titleScreen;
     public GameObject BossFightPanel;
     public GameObject tutorialScreen;
     public GameObject deadScreen;
     public GameObject changePhaseScreen;
     public GameObject dangerScreen;
+    public GameObject shopScreen;
     public GameManager gameManager;
+    public List<GameObject> Items;
+
     public Slider slider;
     private string ActualScreen;
 
     public int phase;
+
 
     public string actualScreen
     {
@@ -46,9 +51,8 @@ public class UiManager : MonoBehaviour
 
     public void UpdateScore()
     {
-        score += 50;
-
-        if (IsScoreEnableToIncreasePhase(score)) 
+        score += 250;
+        if (IsScoreEnableToIncreasePhase(score, phase)) 
         {
             gameManager.InitiateBossFight();
         }
@@ -56,21 +60,32 @@ public class UiManager : MonoBehaviour
         scoreText.text = "Score: " + score;
     }
 
-    private bool IsScoreEnableToIncreasePhase(float score)
+    private bool IsScoreEnableToIncreasePhase(float score, int actualPhase)
     {
-        //fazer isso funcionar mesmo quando tomar dano e os numeros ficarem quebrados
-        int[] array = { 1000, 2000, 3000 };
-
-        if (!Array.Exists(array, element => element == score))
+        int allowedScoreToNewPhase = actualPhase * 1000;
+        if ( score >= allowedScoreToNewPhase)
         {
-            return false;
+            return true;
         }
-
-        return true;
+        return false;
     }
 
     public void KilledTheBoss()
     {
+        HideBossFightPannel();
+        int cristals = gameManager.addCristalToPlayer();
+        OpenShop(cristals);
+        //aumentar os criastais do player quando o bosso morrer
+        //passar daqui pra baixo pra outro metodo
+        //vai chamar quando sair do shop
+
+    }
+
+    public void ExitShop()
+    {
+        CloseShop();
+        phase++;
+        ShowPhaseChangeScreen(phase);
         gameManager.IncreasePhase();
         UpdatePhaseText(phase);
     }
@@ -91,7 +106,7 @@ public class UiManager : MonoBehaviour
 
     public void UpdateScoreDamage()
     {
-        score = score - 100;
+        score -= 100;
         scoreText.text = "Score: " + score;
     }
     public void ShowTitleScreen ()
@@ -112,7 +127,7 @@ public class UiManager : MonoBehaviour
         } else if (ActualScreen == "Tutorial") {
             HideTutorialScreen();
         } else if (ActualScreen == "Dead") {
-            HideDeadScreen();
+            HideDeadScreenAndShowTitleScreen();
         }
     }
 
@@ -138,7 +153,7 @@ public class UiManager : MonoBehaviour
         ActualScreen = "Dead";
     }
 
-    public void HideDeadScreen()
+    public void HideDeadScreenAndShowTitleScreen()
     {
         deadScreen.SetActive(false);
         titleScreen.SetActive(true);
@@ -168,7 +183,7 @@ public class UiManager : MonoBehaviour
         }
     }
 
-    public void UpdateHealthSlider(int health)
+    public void UpdateHealthSlider(float health)
     {
         slider.value = health;
     }
@@ -216,5 +231,23 @@ public class UiManager : MonoBehaviour
         return dangerScreen.activeInHierarchy;
     }
 
+    public void OpenShop(int cristals) 
+    {
+        shopScreen.SetActive(true);
+        cristalText.text = "Player Cristals: " + cristals;
+    }
+
+    public void PurchaseItem(string Item) 
+    { 
+        //verificar os valores adicionais de cada item
+        GameObject item = GameObject.FindWithTag(Item);
+        gameManager.AddItemToPlayer(Item);
+        Destroy(item);
+    }
+
+    public void CloseShop()
+    {
+        shopScreen.SetActive(false);
+    }
 
 }

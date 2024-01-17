@@ -11,7 +11,7 @@ public class PlayerMovement : MonoBehaviour, IMovable
 
     private const float RIGHT_lIMIT = 8.6f;
     private const float LEFT_lIMIT = -8.6f;
-    private const float TOP_LIMIT= 0;
+    private const float TOP_LIMIT = 0;
     private const float BOTTOM_LIMIT = -4.2f;
 
     void Start()
@@ -24,22 +24,27 @@ public class PlayerMovement : MonoBehaviour, IMovable
         Move();
     }
 
+    public void IncreaseSpeed()
+    {
+        _speed += 1.25f;
+    }
+
     public void Move()
     {
         float _multiplierSpeed = GenerateMutiplierSpeed();
-        MoveRight(_multiplierSpeed);
-        MoveUp(_multiplierSpeed);
+        MoveHorizontaly(_multiplierSpeed);
+        MoveVerticaly(_multiplierSpeed);
         BlockLimitScreen();
         MoveSideToSide();
     }
 
-    private void MoveRight(float _multiplierSpeed) 
+    private void MoveHorizontaly(float _multiplierSpeed) 
     {
         float horizontalInput = Input.GetAxis("Horizontal");
         transform.Translate(Vector3.right * _multiplierSpeed * _speed * horizontalInput * Time.deltaTime);
     }
 
-    private void MoveUp(float _multiplierSpeed)
+    private void MoveVerticaly(float _multiplierSpeed)
     {
         float verticalInput = Input.GetAxis("Vertical");
         transform.Translate(Vector3.up * _multiplierSpeed * _speed * verticalInput * Time.deltaTime);

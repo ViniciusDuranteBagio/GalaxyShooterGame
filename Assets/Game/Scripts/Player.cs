@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -21,6 +22,10 @@ public class Player : MonoBehaviour
     [SerializeField]
     private float _canFire = 0.0f;
 
+    private float damagePower;
+
+    public int cristals = 0;
+
     private SpanwManager _spanwManager;
     private AudioSource _audioSource;
     private UiManager _uiManager;
@@ -32,8 +37,11 @@ public class Player : MonoBehaviour
     public bool canTripleShot = false;
     public bool shieldPowerUp = false;
 
+
     private void Start()
     {
+
+        damagePower = 1f;
         transform.position = new Vector3(0, 0, 0);
         _uiManager = GameObject.Find("Canvas").GetComponent<UiManager>();
 
@@ -55,7 +63,6 @@ public class Player : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space) || Input.GetMouseButtonDown(0))
         {
             Shoot();
-
         }
 
     }
@@ -64,17 +71,26 @@ public class Player : MonoBehaviour
         if (Time.time > _canFire)
         {
             _audioSource.Play();
-            if (canTripleShot == true)
+            if (IsTripleShotActive())
             {
-                Instantiate(_tripleShotPrefab, transform.position, Quaternion.identity);
-
+                GameObject laser = Instantiate(_tripleShotPrefab, transform.position, Quaternion.identity);
+                float damagePower = GetDamagePower();
+                laser.GetComponentInChildren<Laser>().SetLaserDamage(damagePower);
             }
             else
             {
-                Instantiate(_laserPrefab, transform.position + new Vector3(0, 0.79f, 0), Quaternion.identity);
+                GameObject laser = Instantiate(_laserPrefab, transform.position, Quaternion.identity);
+                float damagePower = GetDamagePower();
+                laser.GetComponent<Laser>().SetLaserDamage(damagePower);
             }
+            
             _canFire = Time.time + _fireRate;
         }
+    }
+    
+    public bool IsTripleShotActive()
+    {
+        return canTripleShot;
     }
   
     public void Damage()
@@ -128,8 +144,48 @@ public class Player : MonoBehaviour
 
         canTripleShot = false;
     }
-   
-   
+
+    public float GetDamagePower()
+    {
+        if (IsTripleShotActive())
+        {
+            return damagePower * 3;
+        }
+        else
+        {
+            return damagePower;
+        }
+    }
+
+    public void addCristal()
+    {
+        cristals++;
+    }
+
+    public void SubCristal()
+    {
+        cristals--;
+    }
+
+    public void IncreaseDamage()
+    {
+        damagePower++;
+    }
+
+    public void IncreaseAttackSpeed()
+    {
+        _fireRate -= 0.16f;
+    }
+
+    public void IncreaseSpeed()
+    {
+        PlayerMovement playerMovement = GetComponent<PlayerMovement>();
+        playerMovement.IncreaseSpeed();
+    }
+
+        
+
+
 }
 
 

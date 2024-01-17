@@ -12,12 +12,8 @@ public class BossAI : MonoBehaviour
     UiManager _uiManager;
     [SerializeField]
     private AudioClip _clip;
-    public int health;
+    public float health;
     public bool ShouldMoveToLeft = true;
-    [SerializeField]
-    private float _fireRate = 0.40f;
-    [SerializeField]
-    private float _canFire = 0.0f;
     public GameObject _bossLaserPrefab;
 
     // Start is called before the first frame update
@@ -38,7 +34,6 @@ public class BossAI : MonoBehaviour
         {
             _uiManager.SetDangerScreenUnactive();
             MovementBoss();
-            Shoot();
         }
         else
         {
@@ -89,60 +84,34 @@ public class BossAI : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.tag == "Player")
+        if (other.tag == "Laser")
         {
-            Player player = other.GetComponent<Player>();
-            if (player != null)
-            {
-                player.Damage();
-            }
-        }
-
-        else if (other.tag == "Laser")
-        {
+            float damage = other.GetComponent<Laser>().GetLaserDamage();
             if (other.transform.parent != null)
             {
                 Destroy(other.transform.parent.gameObject);
             }
             Destroy(other.gameObject);
-            Damage();
+            Damage(damage);
         }
     }
 
-    public void Damage()
+    public void Damage(float damage)
     {
-        // hitCount++;
-        // if (hitCount == 1)
-        // {
-        //     _engines[0].SetActive(true);
-        // }
-        // else if (hitCount == 2)
-        // {
-        //     _engines[1].SetActive(true);
-        // }
-        //fazer animação dele perdendo motor quando for chegar perto de 
         if (!IsOnStartPosition())
         {
             return;
         }
-        health--;
+
+        health -= damage;
         _uiManager.UpdateHealthSlider(health);
         if (health < 1)
         {
             Instantiate(_Enemy_ExplosionPrefab, transform.position, Quaternion.identity);
-            _uiManager.UpdateScore();
+            //chamar a loja para conseguir comprar perks
             AudioSource.PlayClipAtPoint(_clip, Camera.main.transform.position, 1f);
             _uiManager.KilledTheBoss();
             Destroy(this.gameObject);
         }
     }
-    private void Shoot()
-    {
-        if (Time.time > _canFire)
-        {
-           Instantiate(_bossLaserPrefab, transform.position - new Vector3(0, 1.4f, 0), Quaternion.identity);
-            _canFire = Time.time + _fireRate;
-        }
-    }
-
 }
