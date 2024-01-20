@@ -11,16 +11,25 @@ public class BossAI : MonoBehaviour
     private GameObject _Enemy_ExplosionPrefab;
     UiManager _uiManager;
     [SerializeField]
+    private GameObject _shieldGameObject;
+    [SerializeField]
     private AudioClip _clip;
     public float health;
     public bool ShouldMoveToLeft = true;
     public GameObject _bossLaserPrefab;
+    private bool _shield;
 
     // Start is called before the first frame update
     void Start()
     {
         health = 30;
         _uiManager = GameObject.Find("Canvas").GetComponent<UiManager>();
+        Debug.Log(_uiManager.phase);
+
+        if (true)
+        {
+            InvokeRepeating(nameof(ShieldPowerOn), 10f, 14f);
+        }
     }
 
     // Update is called once per frame
@@ -55,7 +64,7 @@ public class BossAI : MonoBehaviour
         {
             _uiManager.slider.value++;
         }
-            transform.Translate(Vector3.down * 0.5f * Time.deltaTime);
+        transform.Translate(Vector3.down * 0.5f * Time.deltaTime);
     }
     private void MovementBoss()
     {
@@ -98,7 +107,7 @@ public class BossAI : MonoBehaviour
 
     public void Damage(float damage)
     {
-        if (!IsOnStartPosition())
+        if (!IsOnStartPosition() || _shield)
         {
             return;
         }
@@ -108,10 +117,22 @@ public class BossAI : MonoBehaviour
         if (health < 1)
         {
             Instantiate(_Enemy_ExplosionPrefab, transform.position, Quaternion.identity);
-            //chamar a loja para conseguir comprar perks
             AudioSource.PlayClipAtPoint(_clip, Camera.main.transform.position, 1f);
             _uiManager.KilledTheBoss();
             Destroy(this.gameObject);
         }
+    }
+    
+    private void ShieldPowerOn()
+    {
+        _shield = true;
+        _shieldGameObject.SetActive(true);
+        Invoke(nameof(ShieldPowerDown), 4f);
+    }
+
+    private void ShieldPowerDown()
+    {
+        _shield = false;
+        _shieldGameObject.SetActive(false);
     }
 }

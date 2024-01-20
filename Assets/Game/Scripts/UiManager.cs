@@ -75,10 +75,6 @@ public class UiManager : MonoBehaviour
         HideBossFightPannel();
         int cristals = gameManager.addCristalToPlayer();
         OpenShop(cristals);
-        //aumentar os criastais do player quando o bosso morrer
-        //passar daqui pra baixo pra outro metodo
-        //vai chamar quando sair do shop
-
     }
 
     public void ExitShop()

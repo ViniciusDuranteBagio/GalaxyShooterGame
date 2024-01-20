@@ -95,7 +95,7 @@ public class Player : MonoBehaviour
   
     public void Damage()
     {
-        if(shieldPowerUp == true)
+        if(shieldPowerUp)
         {
             shieldPowerUp = false;
             _shieldGameObject.SetActive(false);
@@ -132,10 +132,7 @@ public class Player : MonoBehaviour
     public void TipleShootPowerUpOn()
     {
         canTripleShot = true;
-
         StartCoroutine(TripleShotPowerDownRoutine());
-
-
     }
    
     public IEnumerator TripleShotPowerDownRoutine()
@@ -145,16 +142,13 @@ public class Player : MonoBehaviour
         canTripleShot = false;
     }
 
-    public float GetDamagePower()
+    private float GetDamagePower()
     {
         if (IsTripleShotActive())
         {
             return damagePower * 3;
-        }
-        else
-        {
-            return damagePower;
-        }
+        } 
+        return damagePower;
     }
 
     public void addCristal()

@@ -36,10 +36,22 @@ public class FireLaser : MonoBehaviour
             case 3:
                 return new BossDTO("ThirdFirePattern", 0.2f, 10);
             case 4:
-                return new BossDTO("ForthFirePattern", 2f, 10);
+                //in phase 4 the boss will have tha same attack pattern but it will have a shield for 4 seconds every 10 seconds
+                return new BossDTO("ThirdFirePattern", 2f, 10);
             default:
                 return new BossDTO("FirstFirePattern", 2f, 3);
         }
+    }
+    
+    private void FirstFirePattern()
+    {
+        Vector2 laserDir = Vector2.down;
+
+        GameObject laser = LaserPool.laserPullInstace.GetLaser();
+        laser.transform.position = transform.position;
+        laser.transform.rotation = transform.rotation;
+        laser.SetActive(true);
+        laser.GetComponent<BossLaser>().SetMoveDirection(laserDir);
     }
   
     private void SecondFirePattern()
@@ -64,18 +76,6 @@ public class FireLaser : MonoBehaviour
             angle += angleStep;
         }
     }
-
-    private void FirstFirePattern()
-    {
-        Vector2 laserDir = Vector2.down;
-
-        GameObject laser = LaserPool.laserPullInstace.GetLaser();
-        laser.transform.position = transform.position;
-        laser.transform.rotation = transform.rotation;
-        laser.SetActive(true);
-        laser.GetComponent<BossLaser>().SetMoveDirection(laserDir);
-    }
-
     private void ThirdFirePattern()
     {
         for (int i = 0; i < laserAmount; i++)

@@ -14,12 +14,12 @@ public class PlayerMovement : MonoBehaviour, IMovable
     private const float TOP_LIMIT = 0;
     private const float BOTTOM_LIMIT = -4.2f;
 
-    void Start()
+    private void Start()
     {
         PowerUp.OnSpeedBoostPowerUp += SpeedBoostPowerUpOn;
     }
 
-    void Update()
+    private void Update()
     {
         Move();
     }
@@ -103,5 +103,4 @@ public class PlayerMovement : MonoBehaviour, IMovable
         yield return new WaitForSeconds(5.0f);
         _speedBoostPowerUp = false;
     }
-
 }
