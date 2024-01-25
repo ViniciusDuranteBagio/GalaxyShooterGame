@@ -28,6 +28,10 @@ public class UiManager : MonoBehaviour
 
     public int phase;
 
+    private void Start()
+    {
+        EnemyAI.OnEnemyDeath += UpdateScore;
+    }
 
     public string actualScreen
     {

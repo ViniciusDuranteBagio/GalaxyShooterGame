@@ -13,13 +13,15 @@ public class EnemyAI : MonoBehaviour, IMovable
     private AudioClip _clip;
     public float health;
 
-    // Start is called before the first frame update
+
+    public delegate void EnemyDeath();
+    public static event EnemyDeath OnEnemyDeath;
+
     void Start()
     {
         _uiManager = GameObject.Find("Canvas").GetComponent<UiManager>();
     }
 
-    // Update is called once per frame
     void Update()
     {
         Move();
@@ -55,11 +57,19 @@ public class EnemyAI : MonoBehaviour, IMovable
         health = health - damage;
         if (health < 1)
         {
-            Instantiate(_Enemy_ExplosionPrefab, transform.position, Quaternion.identity);
-            _uiManager.UpdateScore();
-            AudioSource.PlayClipAtPoint(_clip, Camera.main.transform.position, 1f);
-            Destroy(this.gameObject);
+            Death();
+            if (OnEnemyDeath != null)
+            {
+                OnEnemyDeath();
+            }
         }
+    }
+
+    public void Death() 
+    {
+        Instantiate(_Enemy_ExplosionPrefab, transform.position, Quaternion.identity);
+        AudioSource.PlayClipAtPoint(_clip, Camera.main.transform.position, 1f);
+        Destroy(this.gameObject);
     }
 
     public void Move()
