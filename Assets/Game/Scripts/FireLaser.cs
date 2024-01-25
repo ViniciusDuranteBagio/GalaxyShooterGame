@@ -34,12 +34,12 @@ public class FireLaser : MonoBehaviour
             case 2:
                 return new BossDTO("SecondFirePattern", 2f, 11);
             case 3:
-                return new BossDTO("ThirdFirePattern", 0.2f, 10);
+                return new BossDTO("ThirdFirePattern", 0.4f, 10);
             case 4:
                 //in phase 4 the boss will have tha same attack pattern but it will have a shield for 4 seconds every 10 seconds
-                return new BossDTO("ThirdFirePattern", 2f, 10);
+                return new BossDTO("ThirdFirePattern", 0.4f, 10);
             default:
-                return new BossDTO("FirstFirePattern", 2f, 3);
+                return new BossDTO("FirstFirePattern", 0.2f, 3);
         }
     }
     

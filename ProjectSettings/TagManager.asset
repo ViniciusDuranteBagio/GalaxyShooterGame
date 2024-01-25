@@ -7,6 +7,10 @@ TagManager:
   - Laser
   - Enemy
   - EnemyLaser
+  - Speed
+  - Damage
+  - Attack Speed
+  - PowerUps
   layers:
   - Default
   - TransparentFX

@@ -27,6 +27,7 @@ public class PlayerMovement : MonoBehaviour, IMovable
     public void IncreaseSpeed()
     {
         _speed += 1.25f;
+        Debug.Log(_speed);
     }
 
     public void Move()

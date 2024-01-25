@@ -24,7 +24,7 @@ public class Player : MonoBehaviour
 
     private float damagePower;
 
-    public int cristals = 0;
+    public int cristals;
 
     private SpanwManager _spanwManager;
     private AudioSource _audioSource;
@@ -164,6 +164,7 @@ public class Player : MonoBehaviour
     public void IncreaseDamage()
     {
         damagePower++;
+        Debug.Log(damagePower);
     }
 
     public void IncreaseAttackSpeed()

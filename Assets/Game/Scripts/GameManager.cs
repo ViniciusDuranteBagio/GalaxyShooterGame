@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using static UnityEngine.EventSystems.EventTrigger;
@@ -34,8 +35,13 @@ public class GameManager : MonoBehaviour
     public void StopGame()
     {
         gameOver = true;
+        StopSpawnRoutine();
+        DestroyEnemiesAndPowerUpsObjects();
+    }
+
+    public void StopSpawnRoutine()
+    {
         spawnManager.StopSpawnRoutine();
-        DestroyEnemysAndPowerUpsObjects();
     }
 
     public void GoToTitleFromTutorialScreen() 
@@ -57,7 +63,13 @@ public class GameManager : MonoBehaviour
         SceneManager.LoadScene(0);
     }
 
-    protected void DestroyEnemysAndPowerUpsObjects()
+    public void DestroyEnemiesAndPowerUpsObjects()
+    {
+        DestroyEnemies();
+        DestroyPowerUps();
+    }
+
+    private void DestroyEnemies()
     {
         GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
         if (enemies != null)
@@ -68,11 +80,23 @@ public class GameManager : MonoBehaviour
             }
         }
     }
+    
+    private void DestroyPowerUps()
+    {
+        GameObject[] powerUps = GameObject.FindGameObjectsWithTag("PowerUps");
+        if (powerUps != null)
+        {
+            foreach (GameObject powerUp in powerUps)
+            {
+                Destroy(powerUp);
+            }
+        }
+    }
 
     public void IncreasePhase()
     {
         spawnManager.bossFight = false;
-        spawnManager.StartEnemySpawnRoutine();
+        spawnManager.StartSpawnRoutine();
         IncreaseDificult(_uiManager.phase);
     }
 
@@ -81,7 +105,7 @@ public class GameManager : MonoBehaviour
         // achar uma musica mais epica scifi para a boss fight
         // ao chamar a instacia do boss mostrar o slider do lado da tela, apenas na boss fight
         //melhorar o slider que esta horrivel
-        DestroyEnemysAndPowerUpsObjects();
+        DestroyEnemies();
         _uiManager.ShowBossFightPannel();
         spawnManager.bossFight = true;
         spawnManager.InstantiateBoss();
@@ -125,12 +149,6 @@ public class GameManager : MonoBehaviour
         Player playerScript = player.GetComponent<Player>();
         playerScript.addCristal();
         return playerScript.cristals;
-    }
-
-    public void PurchaseItem(string item)
-    {
-        Player playerScript = player.GetComponent<Player>();
-        playerScript.SubCristal();
     }
 
     public void AddItemToPlayer(string item)

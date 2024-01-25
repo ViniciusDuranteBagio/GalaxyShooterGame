@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
-using TMPro;
 using UnityEngine;
-using UnityEngine.SocialPlatforms.Impl;
 using UnityEngine.UI;
 
 public class UiManager : MonoBehaviour
@@ -20,6 +16,7 @@ public class UiManager : MonoBehaviour
     public GameObject BossFightPanel;
     public GameObject tutorialScreen;
     public GameObject deadScreen;
+    public GameObject winScreen;
     public GameObject changePhaseScreen;
     public GameObject dangerScreen;
     public GameObject shopScreen;
@@ -72,7 +69,17 @@ public class UiManager : MonoBehaviour
 
     public void KilledTheBoss()
     {
+        
         HideBossFightPannel();
+        gameManager.StopSpawnRoutine();
+        gameManager.DestroyEnemiesAndPowerUpsObjects();
+
+        if (phase == 4)
+        {
+            winScreen.SetActive(true);
+            return;
+        }
+        
         int cristals = gameManager.addCristalToPlayer();
         OpenShop(cristals);
     }
@@ -235,9 +242,10 @@ public class UiManager : MonoBehaviour
 
     public void PurchaseItem(string Item) 
     { 
-        //verificar os valores adicionais de cada item
         GameObject item = GameObject.FindWithTag(Item);
         gameManager.AddItemToPlayer(Item);
+        Player playerScript = GameObject.FindWithTag("Player").GetComponent<Player>();
+        playerScript.SubCristal();
         Destroy(item);
     }
 

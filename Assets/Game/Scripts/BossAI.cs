@@ -24,9 +24,8 @@ public class BossAI : MonoBehaviour
     {
         health = 30;
         _uiManager = GameObject.Find("Canvas").GetComponent<UiManager>();
-        Debug.Log(_uiManager.phase);
 
-        if (true)
+        if (_uiManager.phase == 4)
         {
             InvokeRepeating(nameof(ShieldPowerOn), 10f, 14f);
         }

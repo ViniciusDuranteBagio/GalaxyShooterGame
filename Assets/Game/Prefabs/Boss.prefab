@@ -256,7 +256,7 @@ MonoBehaviour:
   _speed: 2
   _Enemy_ExplosionPrefab: {fileID: 4175911778939530652, guid: 6b6022ff4d17ac5428fb1f9460138f65,
     type: 3}
-  _shieldGameObject: {fileID: 0}
+  _shieldGameObject: {fileID: 1233036464112844137}
   _clip: {fileID: 8300000, guid: a885c043fab7e46438bba03ba9dab6bc, type: 3}
   health: 100
   ShouldMoveToLeft: 1

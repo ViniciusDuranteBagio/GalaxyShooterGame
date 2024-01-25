@@ -40,6 +40,8 @@ public class SpanwManager : MonoBehaviour
     {
         StopCoroutine(EnemySpawnCorotine());
         StopCoroutine(PowerUpSpawnCorotine());
+        StopCoroutine(AsteroidSpawnCorotine());
+
     }
     public void StartEnemySpawnRoutine()
     {
@@ -56,8 +58,11 @@ public class SpanwManager : MonoBehaviour
         StopEnemySpawnRoutine();
     }
 
+    // ReSharper restore Unity.ExpensiveCode
     IEnumerator EnemySpawnCorotine()
     {
+        //retirar esses whiles que tem nas corrotines, pois elas só vão ser chamdas quando precisar pelos eventos
+        // e colocar se o game tiver pausado, não vai fazer nada
         while (_gameManager.gameOver == false && bossFight == false)
         {
             float randomX = Random.Range(-8.03f, 8.3f);
@@ -66,8 +71,11 @@ public class SpanwManager : MonoBehaviour
         }
     }
 
+    // ReSharper restore Unity.ExpensiveCode
     IEnumerator PowerUpSpawnCorotine()
     {
+        //retirar esses whiles que tem nas corrotines, pois elas só vão ser chamdas quando precisar pelos eventos
+        // e colocar se o game tiver pausado, não vai fazer nada
         while (_gameManager.gameOver == false)
         {
             //transformar essa validação em um evento para trocar o valor de timeToSpawnPowerUp
@@ -81,8 +89,11 @@ public class SpanwManager : MonoBehaviour
         }
     }
 
+    // ReSharper restore Unity.ExpensiveCode
     IEnumerator AsteroidSpawnCorotine()
     {
+        //retirar esses whiles que tem nas corrotines, pois elas só vão ser chamdas quando precisar pelos eventos
+        // e colocar se o game tiver pausado, não vai fazer nada
         while (_gameManager.gameOver == false)
         {
             Instantiate(asteroid, new Vector3(Random.Range(-8.03f, 8.3f), 6.16f, 0), Quaternion.identity);
