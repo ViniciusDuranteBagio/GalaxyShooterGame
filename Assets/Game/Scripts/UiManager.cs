@@ -7,7 +7,6 @@ public class UiManager : MonoBehaviour
 {
     public Sprite[] _life;
     public Image livesImageDisplay;
-    public float score;
     public Text scoreText;
     public Text phaseText;
     public Text phaseChangeText;
@@ -22,11 +21,12 @@ public class UiManager : MonoBehaviour
     public GameObject shopScreen;
     public GameManager gameManager;
     public List<GameObject> Items;
-
     public Slider slider;
     private string ActualScreen;
 
     public int phase;
+    public float score;
+
 
     private void Start()
     {
@@ -44,32 +44,20 @@ public class UiManager : MonoBehaviour
         currentLives = currentLives < 0 ? 0 : currentLives;
 
         livesImageDisplay.sprite = _life[currentLives];
-        if (score > 100)
-        {
-            UpdateScoreDamage();
-        }
     }
 
-    public void UpdateScore()
+ 
+    public void OnScoreUpdate(float score)
     {
-        score += 250;
-        if (IsScoreEnableToIncreasePhase(score, phase)) 
-        {
-            gameManager.InitiateBossFight();
-        }
+        UpdateScoreText(score);
+    }
 
+    private void UpdateScoreText(float score)
+    {
         scoreText.text = "Score: " + score;
     }
 
-    private bool IsScoreEnableToIncreasePhase(float score, int actualPhase)
-    {
-        int allowedScoreToNewPhase = actualPhase * 1000;
-        if ( score >= allowedScoreToNewPhase)
-        {
-            return true;
-        }
-        return false;
-    }
+ 
 
     public void KilledTheBoss()
     {
@@ -99,6 +87,7 @@ public class UiManager : MonoBehaviour
 
     public void UpdatePhaseText(int phase)
     {
+        //passar para evento
         phaseText.text = "Fase : " + phase;
     }
     public void ShowBossFightPannel()
@@ -111,11 +100,6 @@ public class UiManager : MonoBehaviour
         BossFightPanel.SetActive(false);
     }
 
-    public void UpdateScoreDamage()
-    {
-        score -= 100;
-        scoreText.text = "Score: " + score;
-    }
     public void ShowTitleScreen ()
     {
         titleScreen.SetActive(true);
@@ -208,6 +192,7 @@ public class UiManager : MonoBehaviour
 
     IEnumerator FadeOutPhaseScreen()
     {
+        //passar o canvas group para variavel global do script
         CanvasGroup canvasGroup = deadScreen.GetComponent<CanvasGroup>();
         canvasGroup.alpha = 1;
         while (canvasGroup.alpha > 0)

@@ -13,16 +13,26 @@ public class GameManager : MonoBehaviour
     public SpanwManager spawnManager;
     public EnemyAI enemyAi;
     private UiManager _uiManager;
+    public float score;
+    public int phase;
+    public delegate void UpdateScoreHandler(float score);
+    public static event UpdateScoreHandler ScoreUpdated;
+    public delegate void UpdateLivesHandler(int life);
+    public static event UpdateLivesHandler LivesUpdated;
+    
+    public delegate void ShowDeadScreenHandler();
+    public static event ShowDeadScreenHandler ShowedDeadScreen;
 
     private void Start()
     {
         _uiManager = GameObject.Find("Canvas").GetComponent<UiManager>();
         _uiManager.actualScreen = "Title";
-        _uiManager.phase = 1;
+        phase = 1;
+        score = 0;
         enemyAi._speed = 2.35f;
         enemyAi.health = 1;
         spawnManager.timeToSpawnEnemys = 2.5f;
-        _uiManager.UpdatePhaseText(_uiManager.phase);
+        _uiManager.UpdatePhaseText(phase);
     }
 
     public void StartGame()
@@ -169,5 +179,56 @@ public class GameManager : MonoBehaviour
                 break;
         }
     }
+    
+    public void OnEnemyDeath()
+    {
+        score += 250;
+        UpdateScore(score);
+    }
+    
+    public void OnPlayerDamaged(int life)
+    {
+        if (LivesUpdated != null)
+        {
+            LivesUpdated(life);
+        }
 
+        if (score >= 100)
+        {
+            score -= 100;
+        }
+        UpdateScore(score);
+    }
+    
+    public void UpdateScore(float updatedScore)
+    {
+        if (ScoreUpdated != null)
+        {
+            ScoreUpdated(updatedScore);
+        }
+        if (IsScoreEnableToIncreasePhase(updatedScore, phase)) 
+        {
+            InitiateBossFight();
+        }
+    }
+    
+    private bool IsScoreEnableToIncreasePhase(float score, int actualPhase)
+    {
+        int allowedScoreToNewPhase = actualPhase * 1000;
+        if ( score >= allowedScoreToNewPhase)
+        {
+            return true;
+        }
+        return false;
+    }
+    
+    public void OnPlayerDeath()
+    {
+        StopGame();
+        //passar para envent
+        if (ShowedDeadScreen != null)
+        {
+            ShowedDeadScreen();
+        }
+    }
 }

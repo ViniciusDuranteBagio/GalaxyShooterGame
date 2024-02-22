@@ -37,6 +37,12 @@ public class Player : MonoBehaviour
     public bool canTripleShot = false;
     public bool shieldPowerUp = false;
 
+    public delegate void DamagedPlayerHandler(int life);
+    public static event DamagedPlayerHandler DamagedPlayer;
+    
+    public delegate void PlayerDeathHandler();
+    public static event PlayerDeathHandler PlayerDied;
+    
 
     private void Start()
     {
@@ -47,6 +53,7 @@ public class Player : MonoBehaviour
 
         if(_uiManager != null)
         {
+            //passasr essa linha de baixo para enventp
             _uiManager.UpdateLives(_life);
         }
         _gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
@@ -112,16 +119,21 @@ public class Player : MonoBehaviour
             _engines[1].SetActive(true);
         }
         _life--;
-        _uiManager.UpdateLives(_life);
-
+        if (DamagedPlayer != null)
+        {
+            DamagedPlayer(_life);
+        }
 
         if (_life < 1)
         {
             Instantiate(_Explosion_PlayerPrefab, transform.position, Quaternion.identity);
-            _gameManager.StopGame();
-            _uiManager.ShowDeadScreen();
             isPlayerAlive = false;
             Destroy(this.gameObject);
+            
+            if (PlayerDied != null)
+            {
+                PlayerDied();
+            }
         }
     }
     public void EnableShields()
@@ -129,7 +141,7 @@ public class Player : MonoBehaviour
         shieldPowerUp = true;
         _shieldGameObject.SetActive(true);
     }
-    public void TipleShootPowerUpOn()
+    public void TripleShootPowerUpOn()
     {
         canTripleShot = true;
         StartCoroutine(TripleShotPowerDownRoutine());

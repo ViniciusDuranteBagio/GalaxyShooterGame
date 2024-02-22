@@ -44,7 +44,7 @@ public class PowerUp : MonoBehaviour
             {
                 if (powerupID == 0)
                 {
-                    player.TipleShootPowerUpOn();
+                    player.TripleShootPowerUpOn();
                 }
                  
                 else if (powerupID == 1)

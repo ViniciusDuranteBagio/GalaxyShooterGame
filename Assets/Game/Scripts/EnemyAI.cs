@@ -8,20 +8,13 @@ public class EnemyAI : MonoBehaviour, IMovable
     public float _speed;
     [SerializeField]
     private GameObject _Enemy_ExplosionPrefab;
-    UiManager _uiManager;
     [SerializeField]
     private AudioClip _clip;
     public float health;
 
-
-    public delegate void EnemyDeath();
-    public static event EnemyDeath OnEnemyDeath;
-
-    void Start()
-    {
-        _uiManager = GameObject.Find("Canvas").GetComponent<UiManager>();
-    }
-
+    public delegate void EnemyDeadHandler();
+    public static event EnemyDeadHandler EnemyDied;
+    // fazer padrão singleton para ver se podemos mudar esse evento de statico para não statico
     void Update()
     {
         Move();
@@ -29,7 +22,7 @@ public class EnemyAI : MonoBehaviour, IMovable
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.tag == "Player")
+        if (other.CompareTag("Player"))
         {
             Player player = other.GetComponent<Player>();
             if (player != null)
@@ -38,7 +31,7 @@ public class EnemyAI : MonoBehaviour, IMovable
             }
         }
 
-        else if (other.tag == "Laser")
+        else if (other.CompareTag("Laser"))
         {
             float damage = other.GetComponent<Laser>().GetLaserDamage();
 
@@ -54,22 +47,17 @@ public class EnemyAI : MonoBehaviour, IMovable
 
     public void Damage(float damage)
     {
-        health = health - damage;
-        if (health < 1)
+        health -= damage;
+        if (health < 1) 
         {
-            Death();
-            if (OnEnemyDeath != null)
+            Instantiate(_Enemy_ExplosionPrefab, transform.position, Quaternion.identity);
+            AudioSource.PlayClipAtPoint(_clip, Camera.main.transform.position, 1f);
+            if (EnemyDied != null)
             {
-                OnEnemyDeath();
+                EnemyDied();
             }
+            Destroy(this.gameObject);
         }
-    }
-
-    public void Death() 
-    {
-        Instantiate(_Enemy_ExplosionPrefab, transform.position, Quaternion.identity);
-        AudioSource.PlayClipAtPoint(_clip, Camera.main.transform.position, 1f);
-        Destroy(this.gameObject);
     }
 
     public void Move()
