@@ -28,11 +28,6 @@ public class UiManager : MonoBehaviour
     public float score;
 
 
-    private void Start()
-    {
-        EnemyAI.OnEnemyDeath += UpdateScore;
-    }
-
     public string actualScreen
     {
         get { return ActualScreen; }

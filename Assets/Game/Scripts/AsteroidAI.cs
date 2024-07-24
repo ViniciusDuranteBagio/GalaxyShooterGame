@@ -6,7 +6,7 @@ public class AsteroidAI : MonoBehaviour, IMovable
 {
     public float _speed;
     public int health;
-    private GameObject player;
+    public GameObject player;
     private float playerXPosition;
     private float moveXposition;
 
@@ -14,7 +14,6 @@ public class AsteroidAI : MonoBehaviour, IMovable
     void Start()
     {
         _speed = 2.0f;
-        player = GameObject.FindGameObjectWithTag("Player");
         moveXposition = CalculateXPositionToMove();
     }
 

@@ -100,6 +100,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _speed: 3
   health: 1
+  player: {fileID: 8970599931969324352, guid: 31b27acba32b51b4aa4770a540b277dc, type: 3}
 --- !u!58 &-4048239240625002229
 CircleCollider2D:
   m_ObjectHideFlags: 0

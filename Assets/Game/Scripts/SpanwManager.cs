@@ -61,43 +61,30 @@ public class SpanwManager : MonoBehaviour
     // ReSharper restore Unity.ExpensiveCode
     IEnumerator EnemySpawnCorotine()
     {
-        //retirar esses whiles que tem nas corrotines, pois elas só vão ser chamdas quando precisar pelos eventos
-        // e colocar se o game tiver pausado, não vai fazer nada
-        while (_gameManager.gameOver == false && bossFight == false)
-        {
-            float randomX = Random.Range(-8.03f, 8.3f);
-            Instantiate(enemyShipPrefab, transform.position + new Vector3(randomX, 6.16f, 0), Quaternion.identity);
-            yield return new WaitForSeconds(timeToSpawnEnemys);
-        }
+        float randomX = Random.Range(-8.03f, 8.3f);
+        Instantiate(enemyShipPrefab, transform.position + new Vector3(randomX, 6.16f, 0), Quaternion.identity);
+        yield return new WaitForSeconds(timeToSpawnEnemys);
     }
 
     // ReSharper restore Unity.ExpensiveCode
     IEnumerator PowerUpSpawnCorotine()
     {
-        //retirar esses whiles que tem nas corrotines, pois elas só vão ser chamdas quando precisar pelos eventos
-        // e colocar se o game tiver pausado, não vai fazer nada
-        while (_gameManager.gameOver == false)
+        // fazer object pooling
+        //transformar essa validação em um evento para trocar o valor de timeToSpawnPowerUp
+        if (_uiManager.phase >= 2)
         {
-            //transformar essa validação em um evento para trocar o valor de timeToSpawnPowerUp
-            if (_uiManager.phase >= 2)
-            {
-                timeToSpawnPowerUp = 4.0f;
-            }
-            int randomPowerup = Random.Range(0, 3);
-            Instantiate(powerups[randomPowerup], new Vector3(Random.Range(-8.03f, 8.3f), 6.16f, 0), Quaternion.identity);
-            yield return new WaitForSeconds(timeToSpawnPowerUp);
+            timeToSpawnPowerUp = 4.0f;
         }
+        int randomPowerup = Random.Range(0, 3);
+        Instantiate(powerups[randomPowerup], new Vector3(Random.Range(-8.03f, 8.3f), 6.16f, 0), Quaternion.identity);
+        yield return new WaitForSeconds(timeToSpawnPowerUp);
     }
 
     // ReSharper restore Unity.ExpensiveCode
     IEnumerator AsteroidSpawnCorotine()
     {
-        //retirar esses whiles que tem nas corrotines, pois elas só vão ser chamdas quando precisar pelos eventos
-        // e colocar se o game tiver pausado, não vai fazer nada
-        while (_gameManager.gameOver == false)
-        {
-            Instantiate(asteroid, new Vector3(Random.Range(-8.03f, 8.3f), 6.16f, 0), Quaternion.identity);
-            yield return new WaitForSeconds(10.0f);
-        }
+        // fazer object pooling
+        Instantiate(asteroid, new Vector3(Random.Range(-8.03f, 8.3f), 6.16f, 0), Quaternion.identity);
+        yield return new WaitForSeconds(10.0f);
     }
 }

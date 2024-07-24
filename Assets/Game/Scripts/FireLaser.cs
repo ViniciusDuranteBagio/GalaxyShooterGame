@@ -26,7 +26,8 @@ public class FireLaser : MonoBehaviour
 
     private BossDTO generateBossInfo(int phase)
     {
-        //criar o padrão 4 para o ultimo boss
+        //isso n?o deveria estar aqui criar um arquivo s? para gerar o boss
+        //criar o padr?o 4 para o ultimo boss
         switch (phase)
         {
             case 1:
